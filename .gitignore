@@ -1,0 +1,34 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Builds
+.next/
+out/
+dist/
+build/
+
+# Env
+.env
+.env.local
+.env.production
+
+# Models & data
+backend/ai_models/*.joblib
+*.sqlite3
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
