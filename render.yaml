@@ -1,14 +1,12 @@
 services:
   - type: web
     name: swasth-seva-backend
-    runtime: python
-    rootDir: backend
+    runtime: docker
     plan: free
     region: oregon
     healthCheckPath: /api/v1/health
-    pythonVersion: 3.12.4
-    buildCommand: pip install -r requirements.txt
-    startCommand: sh -c "alembic upgrade head && python -m app.seed && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -17,7 +15,7 @@ services:
       - key: REDIS_URL
         fromService:
           name: swasth-seva-redis
-          type: redis
+          type: keyvalue
           property: connectionString
       - key: SECRET_KEY
         generateValue: true
@@ -34,8 +32,6 @@ services:
     name: swasth-seva-frontend
     runtime: static
     rootDir: frontend
-    plan: free
-    region: oregon
     buildCommand: npm ci && npm run build
     staticPublishPath: out
     routes:
@@ -50,13 +46,14 @@ services:
       - key: NEXT_PUBLIC_APP_NAME
         value: Swasth Seva
 
+  - type: keyvalue
+    name: swasth-seva-redis
+    plan: free
+    ipAllowList: []
+    maxmemoryPolicy: noeviction
+
 databases:
   - name: swasth-seva-db
     plan: free
     databaseName: swasthseva
     user: swasth
-
-redis:
-  - name: swasth-seva-redis
-    plan: free
-    maxmemoryPolicy: noeviction
