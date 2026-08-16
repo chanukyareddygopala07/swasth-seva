@@ -137,3 +137,20 @@ async def test_search(client):
     r = await client.get("/api/v1/search", params={"q": "Apollo"})
     assert r.status_code == 200
     assert len(r.json()["hospitals"]) >= 1
+
+
+async def test_superadmin_overview(client):
+    superadmin = await _login(client, "superadmin@swasthseva.app", "SuperAdmin@123")
+    r = await client.get("/api/v1/admin/overview", headers=superadmin)
+    assert r.status_code == 200
+    body = r.json()
+    assert "departments" in body
+    assert body["departments"] >= 1
+
+
+async def test_doctor_workload_not_found(client):
+    admin = await _login(client, "admin@demo.com", "Admin@123")
+    r = await client.get(
+        "/api/v1/admin/doctor-workload/00000000-0000-0000-0000-000000000000", headers=admin
+    )
+    assert r.status_code == 404

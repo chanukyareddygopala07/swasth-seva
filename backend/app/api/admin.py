@@ -6,7 +6,7 @@ from sqlalchemy import func, select
 
 from app.core.deps import DbSession, get_current_user
 from app.core.security import hash_password
-from app.models.user import Doctor, Hospital, Patient, User
+from app.models.user import Department, Doctor, Hospital, Patient, User
 from app.schemas.user import DoctorAvailability, DoctorOut, DoctorUpdate
 router = APIRouter(tags=["admin"])
 
@@ -59,10 +59,10 @@ async def admin_overview(db: DbSession, user=Depends(get_current_user)):
         departments = (
             await db.execute(
                 select(func.count())
-                .select_from(__import__("app.models.user", fromlist=["Department"]).Department)
+                .select_from(Department)
                 .where(
-                    __import__("app.models.user", fromlist=["Department"]).Department.hospital_id == hospital_id,
-                    __import__("app.models.user", fromlist=["Department"]).Department.is_active.is_(True),
+                    Department.hospital_id == hospital_id,
+                    Department.is_active.is_(True),
                 )
             )
         ).scalar_one()
