@@ -30,7 +30,7 @@ jobs:
         run: ruff check app tests
 
       - name: Test
-        run: pytest -q
+        run: python -m pytest -q
 
   frontend:
     name: Frontend (lint, typecheck, tests, build)

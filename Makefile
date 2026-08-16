@@ -31,7 +31,7 @@ frontend:
 	cd frontend && npm run dev
 
 test:
-	cd backend && pytest
+	cd backend && .venv/bin/python -m pytest
 	cd frontend && npm run test
 
 lint:
