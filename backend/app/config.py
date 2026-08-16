@@ -1,4 +1,5 @@
 from functools import lru_cache
+import re
 
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -52,8 +53,8 @@ class Settings(BaseSettings):
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
     def normalize_database_url(cls, v):
-        if isinstance(v, str) and v.startswith("postgres://"):
-            return v.replace("postgres://", "postgresql+asyncpg://", 1)
+        if isinstance(v, str):
+            return re.sub(r"^postgres(?:ql)?://", "postgresql+asyncpg://", v, count=1)
         return v
 
     @property
