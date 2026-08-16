@@ -50,6 +50,13 @@ class Settings(BaseSettings):
     SUPER_ADMIN_EMAIL: str = "superadmin@swasthseva.app"
     SUPER_ADMIN_PASSWORD: str = "SuperAdmin@123"
 
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def normalize_database_url(cls, v):
+        if isinstance(v, str) and v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql+asyncpg://", 1)
+        return v
+
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
     @classmethod
     def split_origins(cls, v):
